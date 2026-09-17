@@ -15,19 +15,35 @@ import { users } from "../db/db.ts";
 const router = Router();
 
 // POST /api/vXXX/auth/login
-router.post("/login", (req: Request, res: Response) => {
-  try { 
-    return res.status(200).json({
-      success: true,
-      message: "Login successful",
-    });
-  } catch (err) {
-    return res.status(500).json({
+router.post("/login",authenticateToken, (req: Request, res: Response) => {
+  const { username, password } = req.body;
+  const user = users.find(
+    (u) => u.username === username && u.password === password,
+  );
+  if (!user) {
+    return res.status(401).json({
       success: false,
-      message: "Something is wrong, please try again",
-      error: err,
+      message: "Username or password is incorrect",
     });
   }
+  const jwt_secret = process.env.JWT_SECRET || "this_is_my_secret";
+
+  const token = jwt.sign(
+    {
+      username: user.username,
+      userId: user.userId,
+    },
+    process.env.JWT_SECRET || "this_is_my_secret",
+    // jwt_secret,
+    { expiresIn: "10m" },
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: "Login successful",
+    token: token,
+  });
+  
 });
 
 // POST /api/vXXX/auth/logout
