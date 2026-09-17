@@ -15,7 +15,8 @@ import { users } from "../db/db.ts";
 const router = Router();
 
 // POST /api/vXXX/auth/login
-router.post("/login",authenticateToken, (req: Request, res: Response) => {
+router.post("/login", (req: Request, res: Response) => {
+  
   const { username, password } = req.body;
   const user = users.find(
     (u) => u.username === username && u.password === password,
@@ -33,8 +34,7 @@ router.post("/login",authenticateToken, (req: Request, res: Response) => {
       username: user.username,
       userId: user.userId,
     },
-    process.env.JWT_SECRET || "this_is_my_secret",
-    // jwt_secret,
+    jwt_secret,
     { expiresIn: "10m" },
   );
 
@@ -47,7 +47,7 @@ router.post("/login",authenticateToken, (req: Request, res: Response) => {
 });
 
 // POST /api/vXXX/auth/logout
-router.post("/logout", authenticateToken, (req: Request, res: Response) => {
+router.post("/logout", (req: Request, res: Response) => {
   try {
     const payload = (req as any).user;
     const token = (req as any).token;

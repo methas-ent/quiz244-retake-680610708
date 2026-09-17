@@ -20,9 +20,9 @@ app.use(morgan("dev"));
 // app.use(morgan("combined"));
 
 //use 
-app.use("/api/v708/auth/", usersRoutes); // login)
+app.use("/api/v708/auth/" , usersRoutes); // login)
 ///api/vXXX/items/:userId
-app.use("/api/v708/basket/", itemsRoutes); // buy items
+app.use("/api/v708/cart/", itemsRoutes); // buy items
 
 
 
